@@ -1,10 +1,10 @@
 # Smart Traffic Management System
 
-## 🚗 Project Overview
+##  Project Overview
 
 The **Smart Traffic Management System** is a comprehensive, full-stack web application designed to efficiently monitor, manage, and optimize traffic flow across multiple junctions. Built with Spring Boot on the backend and modern frontend technologies, this system provides real-time traffic monitoring, signal management, and alert notifications.
 
-## ✨ Features
+##  Features
 
 ### Core Features
 - **Vehicle Tracking**: Monitor active vehicles in real-time with location and speed data
@@ -22,7 +22,7 @@ The **Smart Traffic Management System** is a comprehensive, full-stack web appli
 - Pagination and filtering capabilities
 - Real-time data updates
 
-## 🛠 Technologies Used
+##  Technologies Used
 
 ### Backend
 - **Framework**: Spring Boot 3.1.5
@@ -43,7 +43,7 @@ The **Smart Traffic Management System** is a comprehensive, full-stack web appli
 - **Containerization**: Docker & Docker Compose
 - **Port**: 8080 (Backend), 3306 (MySQL)
 
-## 📋 Project Structure
+##  Project Structure
 
 ```
 Smart-Traffic-Management-Systems/
@@ -86,7 +86,7 @@ Smart-Traffic-Management-Systems/
 └── README.md
 ```
 
-## 🚀 Setup Instructions
+##  Setup Instructions
 
 ### Prerequisites
 - Java 17 or higher
@@ -131,7 +131,7 @@ The application will start on `http://localhost:8080`
 docker-compose up -d
 ```
 
-## 🔌 API Documentation
+##  API Documentation
 
 ### Vehicle Endpoints
 ```
@@ -174,7 +174,7 @@ PUT    /api/alerts/{id}       - Update alert
 DELETE /api/alerts/{id}       - Delete alert
 ```
 
-## 📊 Database Schema
+##  Database Schema
 
 ### vehicles Table
 ```sql
@@ -284,7 +284,7 @@ CREATE TABLE traffic_alerts (
 - Delete alerts
 - Filter by severity and type
 
-## 🔒 Security Features
+##  Security Features
 
 - Input validation on all endpoints
 - Exception handling with meaningful error messages
@@ -292,7 +292,7 @@ CREATE TABLE traffic_alerts (
 - SQL injection prevention through JPA
 - Proper HTTP status codes
 
-## 📈 Performance Considerations
+##  Performance Considerations
 
 - Connection pooling with HikariCP
 - Indexed database queries
@@ -300,7 +300,7 @@ CREATE TABLE traffic_alerts (
 - Lazy loading for relationships
 - Caching ready (extensible)
 
-## 🧪 Testing
+##  Testing
 
 Test the API using:
 - Postman
@@ -313,7 +313,7 @@ Test the API using:
 curl -X GET http://localhost:8080/api/vehicles
 ```
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Port Already in Use
 ```bash
@@ -330,7 +330,7 @@ lsof -ti:8080 | xargs kill -9
 - Ensure frontend URL is in CORS allowed origins
 - Check browser console for specific error messages
 
-## 📝 Logging
+##  Logging
 
 Logs are configured in `application.properties`:
 ```properties
@@ -338,7 +338,7 @@ logging.level.com.traffic=DEBUG
 logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n
 ```
 
-## 🎯 Future Enhancements
+##  Future Enhancements
 
 - [ ] User authentication and authorization
 - [ ] Real-time WebSocket updates
@@ -350,22 +350,22 @@ logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n
 - [ ] Number plate recognition
 - [ ] Emergency vehicle priority system
 
-## 📄 License
+##  License
 
 This project is open source and available under the MIT License.
 
-## 👥 Contributors
+##  Contributors
 
 - **Rajammal S** - B.Tech CSBS, VSB Engineering College
 
-## 📞 Support
+##  Support
 
 For issues and questions:
 - Open an issue on GitHub
 - Check existing documentation
 - Review API documentation
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 - Spring Boot Team for the excellent framework
 - MySQL community for reliable database
