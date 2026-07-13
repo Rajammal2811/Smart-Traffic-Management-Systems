@@ -1,19 +1,18 @@
 package com.traffic.service;
 
-import com.traffic.dto.VehicleDTO;
 import com.traffic.entity.Vehicle;
 import com.traffic.repository.VehicleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
- * Service layer for Vehicle management
+ * Service class for Vehicle management
  */
 @Service
 @Slf4j
@@ -24,121 +23,85 @@ public class VehicleService {
     private VehicleRepository vehicleRepository;
 
     /**
-     * Create a new vehicle record
+     * Create a new vehicle
      */
-    public VehicleDTO createVehicle(VehicleDTO vehicleDTO) {
-        log.info("Creating new vehicle with license plate: {}", vehicleDTO.getLicensePlate());
-        Vehicle vehicle = vehicleDTO.toEntity();
-        Vehicle savedVehicle = vehicleRepository.save(vehicle);
-        return VehicleDTO.fromEntity(savedVehicle);
-    }
-
-    /**
-     * Get vehicle by ID
-     */
-    public VehicleDTO getVehicleById(Long vehicleId) {
-        log.info("Fetching vehicle with ID: {}", vehicleId);
-        Optional<Vehicle> vehicle = vehicleRepository.findById(vehicleId);
-        return vehicle.map(VehicleDTO::fromEntity).orElse(null);
-    }
-
-    /**
-     * Get vehicle by license plate
-     */
-    public VehicleDTO getVehicleByLicensePlate(String licensePlate) {
-        log.info("Fetching vehicle with license plate: {}", licensePlate);
-        Optional<Vehicle> vehicle = vehicleRepository.findByLicensePlate(licensePlate);
-        return vehicle.map(VehicleDTO::fromEntity).orElse(null);
+    public Vehicle createVehicle(Vehicle vehicle) {
+        log.info("Creating vehicle with number: {}", vehicle.getVehicleNumber());
+        if (vehicleRepository.findByVehicleNumber(vehicle.getVehicleNumber()).isPresent()) {
+            throw new IllegalArgumentException("Vehicle already exists");
+        }
+        return vehicleRepository.save(vehicle);
     }
 
     /**
      * Get all vehicles
      */
-    public List<VehicleDTO> getAllVehicles() {
+    public List<Vehicle> getAllVehicles() {
         log.info("Fetching all vehicles");
-        return vehicleRepository.findAll().stream()
-                .map(VehicleDTO::fromEntity)
-                .collect(Collectors.toList());
+        return vehicleRepository.findAll();
     }
 
     /**
-     * Get vehicles by status
+     * Get vehicle by ID
      */
-    public List<VehicleDTO> getVehiclesByStatus(String status) {
-        log.info("Fetching vehicles with status: {}", status);
-        Vehicle.VehicleStatus vehicleStatus = Vehicle.VehicleStatus.valueOf(status);
-        return vehicleRepository.findByStatus(vehicleStatus).stream()
-                .map(VehicleDTO::fromEntity)
-                .collect(Collectors.toList());
+    public Optional<Vehicle> getVehicleById(Long id) {
+        log.info("Fetching vehicle with ID: {}", id);
+        return vehicleRepository.findById(id);
     }
 
     /**
-     * Get vehicles in a geographic area
+     * Get active vehicles
      */
-    public List<VehicleDTO> getVehiclesInArea(Double minLat, Double maxLat, Double minLon, Double maxLon) {
-        log.info("Fetching vehicles in area: [{}, {}] x [{}, {}]", minLat, maxLat, minLon, maxLon);
-        return vehicleRepository.findVehiclesInArea(minLat, maxLat, minLon, maxLon).stream()
-                .map(VehicleDTO::fromEntity)
-                .collect(Collectors.toList());
+    public List<Vehicle> getActiveVehicles() {
+        log.info("Fetching active vehicles");
+        return vehicleRepository.findActiveVehicles();
     }
 
     /**
-     * Get vehicles exceeding speed limit
+     * Get vehicle count
      */
-    public List<VehicleDTO> getVehiclesExceedingSpeed(Double speedLimit) {
-        log.info("Fetching vehicles exceeding speed: {}", speedLimit);
-        return vehicleRepository.findVehiclesExceedingSpeed(speedLimit).stream()
-                .map(VehicleDTO::fromEntity)
-                .collect(Collectors.toList());
+    public Long getActiveVehicleCount() {
+        return vehicleRepository.countActiveVehicles();
     }
 
     /**
-     * Update vehicle information
+     * Update vehicle
      */
-    public VehicleDTO updateVehicle(Long vehicleId, VehicleDTO vehicleDTO) {
-        log.info("Updating vehicle with ID: {}", vehicleId);
-        Optional<Vehicle> existingVehicle = vehicleRepository.findById(vehicleId);
-        if (existingVehicle.isPresent()) {
-            Vehicle vehicle = existingVehicle.get();
-            vehicle.setLicensePlate(vehicleDTO.getLicensePlate());
-            vehicle.setVehicleType(vehicleDTO.getVehicleType());
-            vehicle.setColor(vehicleDTO.getColor());
-            vehicle.setLatitude(vehicleDTO.getLatitude());
-            vehicle.setLongitude(vehicleDTO.getLongitude());
-            vehicle.setSpeed(vehicleDTO.getSpeed());
-            vehicle.setDirection(vehicleDTO.getDirection());
-            vehicle.setStatus(Vehicle.VehicleStatus.valueOf(vehicleDTO.getStatus()));
-            Vehicle updatedVehicle = vehicleRepository.save(vehicle);
-            return VehicleDTO.fromEntity(updatedVehicle);
+    public Vehicle updateVehicle(Long id, Vehicle vehicleDetails) {
+        log.info("Updating vehicle with ID: {}", id);
+        Optional<Vehicle> vehicle = vehicleRepository.findById(id);
+        if (vehicle.isPresent()) {
+            Vehicle v = vehicle.get();
+            v.setVehicleType(vehicleDetails.getVehicleType());
+            v.setOwnerName(vehicleDetails.getOwnerName());
+            v.setCurrentLocation(vehicleDetails.getCurrentLocation());
+            v.setSpeed(vehicleDetails.getSpeed());
+            v.setLatitude(vehicleDetails.getLatitude());
+            v.setLongitude(vehicleDetails.getLongitude());
+            return vehicleRepository.save(v);
         }
-        return null;
+        throw new IllegalArgumentException("Vehicle not found");
     }
 
     /**
-     * Delete vehicle by ID
+     * Delete vehicle
      */
-    public void deleteVehicle(Long vehicleId) {
-        log.info("Deleting vehicle with ID: {}", vehicleId);
-        vehicleRepository.deleteById(vehicleId);
+    public void deleteVehicle(Long id) {
+        log.info("Deleting vehicle with ID: {}", id);
+        vehicleRepository.deleteById(id);
     }
 
     /**
-     * Get count of vehicles by status
+     * Mark vehicle as exited
      */
-    public Long getVehicleCountByStatus(String status) {
-        log.info("Counting vehicles with status: {}", status);
-        Vehicle.VehicleStatus vehicleStatus = Vehicle.VehicleStatus.valueOf(status);
-        return vehicleRepository.countByStatus(vehicleStatus);
+    public Vehicle exitVehicle(Long id) {
+        log.info("Vehicle exiting with ID: {}", id);
+        Optional<Vehicle> vehicle = vehicleRepository.findById(id);
+        if (vehicle.isPresent()) {
+            Vehicle v = vehicle.get();
+            v.setExitTime(LocalDateTime.now());
+            return vehicleRepository.save(v);
+        }
+        throw new IllegalArgumentException("Vehicle not found");
     }
-
-    /**
-     * Get vehicles by date range
-     */
-    public List<VehicleDTO> getVehiclesByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
-        log.info("Fetching vehicles created between {} and {}", startDate, endDate);
-        return vehicleRepository.findVehiclesByDateRange(startDate, endDate).stream()
-                .map(VehicleDTO::fromEntity)
-                .collect(Collectors.toList());
-    }
-
 }

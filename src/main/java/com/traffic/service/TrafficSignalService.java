@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Service layer for Traffic Signal management containing business logic
+ * Service class for TrafficSignal management
  */
 @Service
 @Slf4j
@@ -25,27 +25,11 @@ public class TrafficSignalService {
      * Create a new traffic signal
      */
     public TrafficSignal createSignal(TrafficSignal signal) {
-        log.info("Creating new traffic signal: {}", signal.getSignalCode());
-        if (trafficSignalRepository.findBySignalCode(signal.getSignalCode()).isPresent()) {
-            throw new IllegalArgumentException("Signal with code already exists: " + signal.getSignalCode());
+        log.info("Creating traffic signal: {}", signal.getSignalName());
+        if (trafficSignalRepository.findBySignalName(signal.getSignalName()).isPresent()) {
+            throw new IllegalArgumentException("Signal already exists");
         }
         return trafficSignalRepository.save(signal);
-    }
-
-    /**
-     * Get signal by ID
-     */
-    public Optional<TrafficSignal> getSignalById(Long signalId) {
-        log.info("Fetching signal with ID: {}", signalId);
-        return trafficSignalRepository.findById(signalId);
-    }
-
-    /**
-     * Get signal by code
-     */
-    public Optional<TrafficSignal> getSignalByCode(String signalCode) {
-        log.info("Fetching signal with code: {}", signalCode);
-        return trafficSignalRepository.findBySignalCode(signalCode);
     }
 
     /**
@@ -57,71 +41,44 @@ public class TrafficSignalService {
     }
 
     /**
-     * Get signals by status
+     * Get signal by ID
      */
-    public List<TrafficSignal> getSignalsByStatus(String status) {
-        log.info("Fetching signals with status: {}", status);
-        TrafficSignal.SignalStatus signalStatus = TrafficSignal.SignalStatus.valueOf(status.toUpperCase());
-        return trafficSignalRepository.findByStatus(signalStatus);
+    public Optional<TrafficSignal> getSignalById(Long id) {
+        log.info("Fetching signal with ID: {}", id);
+        return trafficSignalRepository.findById(id);
     }
 
     /**
-     * Get signals by current color
+     * Update signal
      */
-    public List<TrafficSignal> getSignalsByColor(String color) {
-        log.info("Fetching signals with color: {}", color);
-        TrafficSignal.SignalColor signalColor = TrafficSignal.SignalColor.valueOf(color.toUpperCase());
-        return trafficSignalRepository.findByCurrentColor(signalColor);
-    }
-
-    /**
-     * Get signals by location
-     */
-    public List<TrafficSignal> getSignalsByLocation(String location) {
-        log.info("Fetching signals in location: {}", location);
-        return trafficSignalRepository.findByLocationContaining(location);
-    }
-
-    /**
-     * Update signal information
-     */
-    public TrafficSignal updateSignal(Long signalId, TrafficSignal signalDetails) {
-        log.info("Updating signal with ID: {}", signalId);
-        Optional<TrafficSignal> existingSignal = trafficSignalRepository.findById(signalId);
-        if (existingSignal.isPresent()) {
-            TrafficSignal signal = existingSignal.get();
-            signal.setSignalCode(signalDetails.getSignalCode());
-            signal.setLocation(signalDetails.getLocation());
-            signal.setLatitude(signalDetails.getLatitude());
-            signal.setLongitude(signalDetails.getLongitude());
-            signal.setCurrentColor(signalDetails.getCurrentColor());
-            signal.setGreenDuration(signalDetails.getGreenDuration());
-            signal.setYellowDuration(signalDetails.getYellowDuration());
-            signal.setRedDuration(signalDetails.getRedDuration());
-            signal.setStatus(signalDetails.getStatus());
-            return trafficSignalRepository.save(signal);
+    public TrafficSignal updateSignal(Long id, TrafficSignal signalDetails) {
+        log.info("Updating signal with ID: {}", id);
+        Optional<TrafficSignal> signal = trafficSignalRepository.findById(id);
+        if (signal.isPresent()) {
+            TrafficSignal s = signal.get();
+            s.setStatus(signalDetails.getStatus());
+            s.setTimer(signalDetails.getTimer());
+            s.setGreenDuration(signalDetails.getGreenDuration());
+            s.setYellowDuration(signalDetails.getYellowDuration());
+            s.setRedDuration(signalDetails.getRedDuration());
+            return trafficSignalRepository.save(s);
         }
-        throw new IllegalArgumentException("Signal not found with ID: " + signalId);
+        throw new IllegalArgumentException("Signal not found");
     }
 
     /**
      * Delete signal
      */
-    public void deleteSignal(Long signalId) {
-        log.info("Deleting signal with ID: {}", signalId);
-        if (!trafficSignalRepository.existsById(signalId)) {
-            throw new IllegalArgumentException("Signal not found with ID: " + signalId);
-        }
-        trafficSignalRepository.deleteById(signalId);
+    public void deleteSignal(Long id) {
+        log.info("Deleting signal with ID: {}", id);
+        trafficSignalRepository.deleteById(id);
     }
 
     /**
-     * Get count of signals by status
+     * Get signals by status
      */
-    public Long getSignalCountByStatus(String status) {
-        log.info("Counting signals with status: {}", status);
-        TrafficSignal.SignalStatus signalStatus = TrafficSignal.SignalStatus.valueOf(status.toUpperCase());
-        return trafficSignalRepository.countByStatus(signalStatus);
+    public List<TrafficSignal> getSignalsByStatus(TrafficSignal.SignalStatus status) {
+        log.info("Fetching signals with status: {}", status);
+        return trafficSignalRepository.findByStatus(status);
     }
-
 }

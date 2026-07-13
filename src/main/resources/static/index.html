@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Traffic Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="logo">🚗 Smart Traffic Management</div>
+            <ul class="nav-menu">
+                <li><a href="#" onclick="showDashboard()">Dashboard</a></li>
+                <li><a href="#" onclick="showVehicles()">Vehicles</a></li>
+                <li><a href="#" onclick="showSignals()">Signals</a></li>
+                <li><a href="#" onclick="showJunctions()">Junctions</a></li>
+                <li><a href="#" onclick="showAlerts()">Alerts</a></li>
+            </ul>
+        </nav>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section">
+            <h1>Traffic Dashboard</h1>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Active Vehicles</div>
+                    <div class="stat-value" id="activeVehicles">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Total Signals</div>
+                    <div class="stat-value" id="totalSignals">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Total Junctions</div>
+                    <div class="stat-value" id="totalJunctions">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Active Alerts</div>
+                    <div class="stat-value" id="activeAlerts">0</div>
+                </div>
+            </div>
+
+            <!-- Alerts Section -->
+            <div class="section-box">
+                <h2>Latest Alerts</h2>
+                <div id="alertsList" class="list-container">
+                    <p>Loading alerts...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Vehicles Section -->
+        <section id="vehicles" class="section" style="display:none;">
+            <h1>Vehicle Management</h1>
+            <button class="btn btn-primary" onclick="showVehicleForm()">+ Add Vehicle</button>
+            
+            <div id="vehicleForm" class="form-container" style="display:none;">
+                <h3>Add New Vehicle</h3>
+                <form onsubmit="createVehicle(event)">
+                    <input type="text" id="vehicleNumber" placeholder="Vehicle Number" required>
+                    <input type="text" id="vehicleType" placeholder="Vehicle Type" required>
+                    <input type="text" id="ownerName" placeholder="Owner Name" required>
+                    <input type="text" id="currentLocation" placeholder="Current Location" required>
+                    <input type="number" id="speed" placeholder="Speed (km/h)" min="0" max="200">
+                    <button type="submit" class="btn btn-success">Create Vehicle</button>
+                    <button type="button" class="btn btn-danger" onclick="hideVehicleForm()">Cancel</button>
+                </form>
+            </div>
+
+            <div id="vehiclesList" class="list-container">
+                <p>Loading vehicles...</p>
+            </div>
+        </section>
+
+        <!-- Signals Section -->
+        <section id="signals" class="section" style="display:none;">
+            <h1>Traffic Signal Management</h1>
+            <button class="btn btn-primary" onclick="showSignalForm()">+ Add Signal</button>
+            
+            <div id="signalForm" class="form-container" style="display:none;">
+                <h3>Add New Signal</h3>
+                <form onsubmit="createSignal(event)">
+                    <input type="text" id="signalName" placeholder="Signal Name" required>
+                    <input type="text" id="signalLocation" placeholder="Location" required>
+                    <select id="signalStatus" required>
+                        <option value="">Select Status</option>
+                        <option value="RED">Red</option>
+                        <option value="YELLOW">Yellow</option>
+                        <option value="GREEN">Green</option>
+                    </select>
+                    <button type="submit" class="btn btn-success">Create Signal</button>
+                    <button type="button" class="btn btn-danger" onclick="hideSignalForm()">Cancel</button>
+                </form>
+            </div>
+
+            <div id="signalsList" class="list-container">
+                <p>Loading signals...</p>
+            </div>
+        </section>
+
+        <!-- Junctions Section -->
+        <section id="junctions" class="section" style="display:none;">
+            <h1>Traffic Junction Management</h1>
+            <button class="btn btn-primary" onclick="showJunctionForm()">+ Add Junction</button>
+            
+            <div id="junctionForm" class="form-container" style="display:none;">
+                <h3>Add New Junction</h3>
+                <form onsubmit="createJunction(event)">
+                    <input type="text" id="junctionName" placeholder="Junction Name" required>
+                    <input type="text" id="junctionLocation" placeholder="Location" required>
+                    <input type="number" id="numberOfSignals" placeholder="Number of Signals" min="1" required>
+                    <input type="number" id="trafficDensity" placeholder="Traffic Density (%)" min="0" max="100" required>
+                    <button type="submit" class="btn btn-success">Create Junction</button>
+                    <button type="button" class="btn btn-danger" onclick="hideJunctionForm()">Cancel</button>
+                </form>
+            </div>
+
+            <div id="junctionsList" class="list-container">
+                <p>Loading junctions...</p>
+            </div>
+        </section>
+
+        <!-- Alerts Section -->
+        <section id="alerts" class="section" style="display:none;">
+            <h1>Traffic Alerts Management</h1>
+            <button class="btn btn-primary" onclick="showAlertForm()">+ Create Alert</button>
+            
+            <div id="alertForm" class="form-container" style="display:none;">
+                <h3>Create New Alert</h3>
+                <form onsubmit="createAlert(event)">
+                    <select id="alertType" required>
+                        <option value="">Select Alert Type</option>
+                        <option value="ACCIDENT">Accident</option>
+                        <option value="CONGESTION">Congestion</option>
+                        <option value="SIGNAL_FAILURE">Signal Failure</option>
+                        <option value="WEATHER">Weather</option>
+                        <option value="OBSTRUCTION">Obstruction</option>
+                    </select>
+                    <input type="text" id="alertLocation" placeholder="Location" required>
+                    <input type="text" id="alertMessage" placeholder="Message" required>
+                    <select id="alertSeverity" required>
+                        <option value="">Select Severity</option>
+                        <option value="LOW">Low</option>
+                        <option value="MEDIUM">Medium</option>
+                        <option value="HIGH">High</option>
+                        <option value="CRITICAL">Critical</option>
+                    </select>
+                    <button type="submit" class="btn btn-success">Create Alert</button>
+                    <button type="button" class="btn btn-danger" onclick="hideAlertForm()">Cancel</button>
+                </form>
+            </div>
+
+            <div id="alertsList" class="list-container">
+                <p>Loading alerts...</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
