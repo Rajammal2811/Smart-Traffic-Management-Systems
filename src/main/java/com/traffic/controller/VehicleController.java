@@ -19,7 +19,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/vehicles")
 @Slf4j
-@CrossOrigin(origins = "*", maxAge = 3600)
 public class VehicleController {
 
     @Autowired
