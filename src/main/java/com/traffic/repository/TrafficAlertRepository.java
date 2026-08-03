@@ -27,6 +27,6 @@ public interface TrafficAlertRepository extends JpaRepository<TrafficAlert, Long
             @Param("endTime") LocalDateTime endTime
     );
 
-    @Query("SELECT a FROM TrafficAlert a WHERE a.status = 'ACTIVE' ORDER BY a.severity DESC")
-    List<TrafficAlert> findActiveAlerts();
+    @Query("SELECT a FROM TrafficAlert a WHERE a.status = :status ORDER BY a.severity DESC")
+    List<TrafficAlert> findActiveAlerts(@Param("status") TrafficAlert.AlertStatus status);
 }
