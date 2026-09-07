@@ -1,6 +1,8 @@
 package com.traffic.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,19 +26,24 @@ public class TrafficAlert {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @NotNull(message = "Alert type is required")
     private AlertType alertType;
 
     @Column(nullable = false, length = 255)
+    @NotBlank(message = "Message cannot be blank")
     private String message;
 
     @Column(nullable = false, length = 150)
+    @NotBlank(message = "Location cannot be blank")
     private String location;
 
     @Column(nullable = false)
+    @NotNull(message = "Created time is required")
     private LocalDateTime createdTime;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @NotNull(message = "Severity is required")
     private AlertSeverity severity;
 
     @Column(nullable = false)
@@ -47,7 +54,12 @@ public class TrafficAlert {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AlertStatus status;
+    @NotNull(message = "Status is required")
+    private AlertStatus status = AlertStatus.ACTIVE;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "junction_id")
+    private TrafficJunction junction;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -70,7 +82,7 @@ public class TrafficAlert {
     }
 
     public enum AlertType {
-        ACCIDENT, CONGESTION, SIGNAL_FAILURE, WEATHER, OBSTRUCTION, SPEED_VIOLATION
+        ACCIDENT, CONGESTION, SIGNAL_FAILURE, WEATHER, OBSTRUCTION, SPEED_VIOLATION, EMERGENCY_VEHICLE
     }
 
     public enum AlertSeverity {
